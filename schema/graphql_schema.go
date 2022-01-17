@@ -194,14 +194,22 @@ func (g *GraphQL) initQueryMutation() {
 				Name: "",
 				Type: noteType,
 				Args: graphql.FieldConfigArgument{
-					"userId": &graphql.ArgumentConfig{Type: graphql.NewNonNull(graphql.String)},
-					"text":   &graphql.ArgumentConfig{Type: graphql.NewNonNull(graphql.String)},
+					"userId":     &graphql.ArgumentConfig{Type: graphql.NewNonNull(graphql.String)},
+					"text":       &graphql.ArgumentConfig{Type: graphql.NewNonNull(graphql.String)},
+					"themeColor": &graphql.ArgumentConfig{Type: graphql.String},
 				},
 				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+					var themeColor = p.Args["themeColor"].(string)
+
+					if themeColor == "" {
+						themeColor = "theme1"
+					}
+
 					newNote := entity.Note{
-						Text:    p.Args["text"].(string),
-						Visible: true,
-						UserId:  p.Args["userId"].(string),
+						Text:       p.Args["text"].(string),
+						Visible:    true,
+						UserId:     p.Args["userId"].(string),
+						ThemeColor: themeColor,
 						//User:        entity.User{},
 						CreatedDate: time.Now(),
 						UpdateDate:  time.Now(),
