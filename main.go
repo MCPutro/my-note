@@ -54,6 +54,12 @@ func main() {
 
 	graphql.InitialPath("/graphql")
 
+	myRoute.HandleFunc("/", chectAPI).Methods("GET")
+
 	log.Fatal(http.ListenAndServe(":"+PORT, myRoute))
 
+}
+
+func chectAPI(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprint(w, "ok")
 }
