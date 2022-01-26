@@ -6,7 +6,6 @@ import (
 	"github.com/MCPutro/my-note/entity"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
-	"time"
 )
 
 type userRepoImplement struct {
@@ -74,8 +73,6 @@ func (repo *userRepoImplement) FindByEmail(ctx context.Context, email string) (e
 func (repo *userRepoImplement) FindAll(ctx context.Context) ([]entity.User, error) {
 
 	var listUser []entity.User
-
-	time.Sleep(11 * time.Second)
 
 	find := repo.DB.WithContext(ctx).Find(&listUser)
 
