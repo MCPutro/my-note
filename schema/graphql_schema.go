@@ -109,7 +109,7 @@ func (g *GraphQL) initQueryMutation() {
 				},
 				Subscribe:         nil,
 				DeprecationReason: "",
-				Description:       "Get book list",
+				Description: "Get user	 list",
 			},
 
 			"getUser": &graphql.Field{
@@ -139,7 +139,7 @@ func (g *GraphQL) initQueryMutation() {
 				},
 				Subscribe:         nil,
 				DeprecationReason: "",
-				Description:       "",
+				Description:       "get user by email and password",
 			},
 
 			"getNoteByUID": &graphql.Field{
