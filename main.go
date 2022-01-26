@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"github.com/MCPutro/my-note/controller"
 	db_driver "github.com/MCPutro/my-note/db-driver"
@@ -16,13 +17,15 @@ import (
 var (
 	myRoute = mux.NewRouter().StrictSlash(true)
 
-	userService    = service.UserService{}
+	contextParent = context.Background()
+
+	userService    = service.UserService{CtxParent: contextParent}
 	userController = controller.UserController{
 		Route:       myRoute,
 		UserService: &userService,
 	}
 
-	noteService    = service.NoteService{}
+	noteService    = service.NoteService{CtxParent: contextParent}
 	noteController = controller.NoteController{
 		Route:       myRoute,
 		NoteService: &noteService,
@@ -39,6 +42,7 @@ func init() {
 	db := db_driver.GetConnection()
 	defer db_driver.CloseConnection(db)
 	db.AutoMigrate(entity.Note{})
+
 }
 
 func main() {

@@ -2,9 +2,11 @@ package repository
 
 import (
 	"context"
+	"fmt"
 	"github.com/MCPutro/my-note/entity"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
+	"time"
 )
 
 type userRepoImplement struct {
@@ -21,9 +23,8 @@ func (repo *userRepoImplement) Insert(ctx context.Context, user entity.User) (en
 
 	defer func() {
 		db, _ := repo.DB.DB()
-		err := db.Close()
-		if err != nil {
-		}
+		db.Close()
+		fmt.Println("Close connection to db")
 	}()
 
 	if create.Error != nil {
@@ -40,9 +41,8 @@ func (repo *userRepoImplement) FindById(ctx context.Context, id string) (entity.
 
 	defer func() {
 		db, _ := repo.DB.DB()
-		err := db.Close()
-		if err != nil {
-		}
+		db.Close()
+		fmt.Println("Close connection to db")
 	}()
 
 	if firstResult.Error != nil {
@@ -60,9 +60,8 @@ func (repo *userRepoImplement) FindByEmail(ctx context.Context, email string) (e
 
 	defer func() {
 		db, _ := repo.DB.DB()
-		err := db.Close()
-		if err != nil {
-		}
+		db.Close()
+		fmt.Println("Close connection to db")
 	}()
 
 	if firstResult.Error != nil {
@@ -76,20 +75,14 @@ func (repo *userRepoImplement) FindAll(ctx context.Context) ([]entity.User, erro
 
 	var listUser []entity.User
 
+	time.Sleep(11 * time.Second)
+
 	find := repo.DB.WithContext(ctx).Find(&listUser)
 
 	defer func() {
 		db, _ := repo.DB.DB()
-		err := db.Close()
-		if err != nil {
-		}
-	}()
-
-	defer func() {
-		db, _ := repo.DB.DB()
-		err := db.Close()
-		if err != nil {
-		}
+		db.Close()
+		fmt.Println("Close connection to db")
 	}()
 
 	if find.Error != nil {

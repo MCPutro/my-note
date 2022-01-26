@@ -286,10 +286,10 @@ func (g *GraphQL) InitialPath(path string) {
 		},
 	)
 	g.schema = handler.New(&handler.Config{
-		Schema:   &schema,
-		Pretty:   true,
-		GraphiQL: true,
-		//Playground: true,
+		Schema:     &schema,
+		Pretty:     true,
+		GraphiQL:   true,
+		Playground: true,
 	})
 
 	g.Route.Handle(path, g.schema)

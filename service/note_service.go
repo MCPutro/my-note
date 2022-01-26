@@ -8,17 +8,22 @@ import (
 	"time"
 )
 
-type NoteService struct{}
+type NoteService struct {
+	CtxParent context.Context
+}
 
 func (n NoteService) InsertNewNote(newNote entity.Note) (interface{}, error) {
 
 	noteRepo := repository.GetNoteRepository(db_driver.GetConnection())
 
+	ctx, cancelFunc := context.WithTimeout(n.CtxParent, 10*time.Second)
+	defer cancelFunc()
+
 	newNote.Visible = true
 	newNote.CreatedDate = time.Now()
 	newNote.UpdateDate = time.Now()
 
-	result, err := noteRepo.Insert(context.Background(), newNote)
+	result, err := noteRepo.Insert(ctx, newNote)
 	if err != nil {
 		return nil, err
 	}
@@ -32,9 +37,12 @@ func (n NoteService) UpdateNote(note entity.Note) (interface{}, error) {
 
 	noteRepo := repository.GetNoteRepository(db_driver.GetConnection())
 
+	ctx, cancelFunc := context.WithTimeout(n.CtxParent, 10*time.Second)
+	defer cancelFunc()
+
 	note.UpdateDate = time.Now()
 
-	result, err := noteRepo.Update(context.Background(), note)
+	result, err := noteRepo.Update(ctx, note)
 	if err != nil {
 		return nil, err
 	}
@@ -48,7 +56,10 @@ func (n NoteService) GetNoteByUID(UserId string) (interface{}, error) {
 
 	noteRepo := repository.GetNoteRepository(db_driver.GetConnection())
 
-	result, err := noteRepo.FindByUserId(context.Background(), UserId)
+	ctx, cancelFunc := context.WithTimeout(n.CtxParent, 10*time.Second)
+	defer cancelFunc()
+
+	result, err := noteRepo.FindByUserId(ctx, UserId)
 	if err != nil {
 		return nil, err
 	}
@@ -60,7 +71,10 @@ func (n NoteService) Remove(NoteId int) error {
 
 	noteRepo := repository.GetNoteRepository(db_driver.GetConnection())
 
-	err := noteRepo.Remove(context.Background(), NoteId)
+	ctx, cancelFunc := context.WithTimeout(n.CtxParent, 10*time.Second)
+	defer cancelFunc()
+
+	err := noteRepo.Remove(ctx, NoteId)
 
 	if err != nil {
 		return err
@@ -73,7 +87,10 @@ func (n NoteService) RemovePermanent(NoteId int) error {
 
 	noteRepo := repository.GetNoteRepository(db_driver.GetConnection())
 
-	err := noteRepo.RemovePermanent(context.Background(), NoteId)
+	ctx, cancelFunc := context.WithTimeout(n.CtxParent, 10*time.Second)
+	defer cancelFunc()
+
+	err := noteRepo.RemovePermanent(ctx, NoteId)
 
 	if err != nil {
 		return err

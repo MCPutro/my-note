@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"fmt"
 	"github.com/MCPutro/my-note/entity"
 	"gorm.io/gorm"
 )
@@ -17,6 +18,7 @@ func (n *noteRepoImplement) Insert(ctx context.Context, newNote entity.Note) (en
 	defer func() {
 		db, _ := n.DB.DB()
 		db.Close()
+		fmt.Println("Close connection to db")
 	}()
 
 	if result.Error != nil {
@@ -38,6 +40,7 @@ func (n *noteRepoImplement) Update(ctx context.Context, note entity.Note) (entit
 	defer func() {
 		db, _ := n.DB.DB()
 		db.Close()
+		fmt.Println("Close connection to db")
 	}()
 
 	if result.Error != nil {
@@ -62,6 +65,7 @@ func (n *noteRepoImplement) Remove(ctx context.Context, noteId int) error { //se
 	defer func() {
 		db, _ := n.DB.DB()
 		db.Close()
+		fmt.Println("Close connection to db")
 	}()
 
 	if result.Error != nil {
@@ -77,6 +81,7 @@ func (n *noteRepoImplement) RemovePermanent(ctx context.Context, noteId int) err
 	defer func() {
 		db, _ := n.DB.DB()
 		db.Close()
+		fmt.Println("Close connection to db")
 	}()
 
 	if result.Error != nil {
@@ -93,6 +98,7 @@ func (n *noteRepoImplement) FindByUserId(ctx context.Context, userId string) ([]
 	defer func() {
 		db, _ := n.DB.DB()
 		db.Close()
+		fmt.Println("Close connection to db")
 	}()
 
 	if find.Error != nil {
