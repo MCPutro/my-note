@@ -13,20 +13,19 @@ import (
 )
 
 type NoteControllerImpl struct {
-	Route       *mux.Router
 	NoteService service.NoteService
 }
 
-func NewNoteController(route *mux.Router, noteService service.NoteService) NoteController {
-	return &NoteControllerImpl{Route: route, NoteService: noteService}
+func NewNoteController(noteService service.NoteService) NoteController {
+	return &NoteControllerImpl{NoteService: noteService}
 }
 
-func (nc *NoteControllerImpl) InitialPath(path string) {
-	nc.Route.HandleFunc(path+"/create", nc.createNewNote).Methods("POST")
-	nc.Route.HandleFunc(path+"/update", nc.updateNote).Methods("POST")
-	nc.Route.HandleFunc(path+"/getAllByUID", nc.getNoteByUserId).Methods("GET")
-	nc.Route.HandleFunc(path+"/remove", nc.remove).Methods("GET")
-	nc.Route.HandleFunc(path+"/removePermanent", nc.removePermanent).Methods("GET")
+func (nc *NoteControllerImpl) InitialPath(route *mux.Router, path string) {
+	route.HandleFunc(path+"/create", nc.createNewNote).Methods("POST")
+	route.HandleFunc(path+"/update", nc.updateNote).Methods("POST")
+	route.HandleFunc(path+"/getAllByUID", nc.getNoteByUserId).Methods("GET")
+	route.HandleFunc(path+"/remove", nc.remove).Methods("GET")
+	route.HandleFunc(path+"/removePermanent", nc.removePermanent).Methods("GET")
 
 	//nc.Route.HandleFunc(path+"/{sm}/subscribe", test).Methods("POST")
 	//nc.Route.HandleFunc(path+"/findAll/{sm}", sosMed.FindAll).Methods("GET")

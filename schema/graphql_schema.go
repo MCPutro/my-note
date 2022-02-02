@@ -89,7 +89,6 @@ type GraphQL struct {
 	UserService service.UserService
 	NoteService service.NoteService
 	schema      *handler.Handler
-	Route       *mux.Router
 }
 
 func (g *GraphQL) initQueryMutation() {
@@ -276,7 +275,7 @@ func (g *GraphQL) initQueryMutation() {
 	})
 }
 
-func (g *GraphQL) InitialPath(path string) {
+func (g *GraphQL) InitialPath(Route *mux.Router, path string) {
 	g.initQueryMutation()
 
 	var schema, _ = graphql.NewSchema(
@@ -292,5 +291,5 @@ func (g *GraphQL) InitialPath(path string) {
 		Playground: true,
 	})
 
-	g.Route.Handle(path, g.schema)
+	Route.Handle(path, g.schema)
 }

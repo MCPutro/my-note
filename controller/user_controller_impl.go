@@ -11,18 +11,17 @@ import (
 )
 
 type UserControllerImpl struct {
-	Route       *mux.Router
 	UserService service.UserService
 }
 
-func NewUserController(route *mux.Router, userService service.UserService) UserController {
-	return &UserControllerImpl{Route: route, UserService: userService}
+func NewUserController(userService service.UserService) UserController {
+	return &UserControllerImpl{UserService: userService}
 }
 
-func (uc *UserControllerImpl) InitialPath(path string) {
-	uc.Route.HandleFunc(path+"/signUp", uc.createNewUser).Methods("POST")
-	uc.Route.HandleFunc(path+"/signIn", uc.signInUser).Methods("POST")
-	uc.Route.HandleFunc(path+"/getAllUser", uc.getAllUser).Methods("GET")
+func (uc *UserControllerImpl) InitialPath(route *mux.Router, path string) {
+	route.HandleFunc(path+"/signUp", uc.createNewUser).Methods("POST")
+	route.HandleFunc(path+"/signIn", uc.signInUser).Methods("POST")
+	route.HandleFunc(path+"/getAllUser", uc.getAllUser).Methods("GET")
 }
 
 func (uc UserControllerImpl) createNewUser(w http.ResponseWriter, r *http.Request) {

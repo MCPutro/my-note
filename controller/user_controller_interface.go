@@ -1,9 +1,12 @@
 package controller
 
-import "net/http"
+import (
+	"github.com/gorilla/mux"
+	"net/http"
+)
 
 type UserController interface {
-	InitialPath(path string)
+	InitialPath(route *mux.Router, path string)
 	createNewUser(w http.ResponseWriter, r *http.Request)
 	signInUser(w http.ResponseWriter, r *http.Request)
 	getAllUser(w http.ResponseWriter, r *http.Request)
