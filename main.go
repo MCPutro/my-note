@@ -1,11 +1,11 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"github.com/MCPutro/my-note/controller"
 	db_driver "github.com/MCPutro/my-note/db-driver"
 	"github.com/MCPutro/my-note/entity"
+	"github.com/MCPutro/my-note/repository"
 	"github.com/MCPutro/my-note/schema"
 	"github.com/MCPutro/my-note/service"
 	"github.com/gorilla/mux"
@@ -15,34 +15,33 @@ import (
 )
 
 var (
-	myRoute = mux.NewRouter().StrictSlash(true)
+	myRoute = mux.NewRouter()
 
-	contextParent = context.Background()
+	db = db_driver.GetConnection()
 
-	userService    = service.UserService{CtxParent: contextParent}
-	userController = controller.UserController{
-		Route:       myRoute,
-		UserService: &userService,
-	}
+	userRepo       = repository.NewUserRepository()
+	userService    = service.NewUserService(userRepo, db)
+	userController = controller.NewUserController(myRoute, userService)
 
-	noteService    = service.NoteService{CtxParent: contextParent}
-	noteController = controller.NoteController{
-		Route:       myRoute,
-		NoteService: &noteService,
-	}
-
-	graphql = schema.GraphQL{
-		UserService: &userService,
-		NoteService: &noteService,
-		Route:       myRoute,
-	}
+	noteRepo       = repository.NewNoteRepository()
+	noteService    = service.NewNoteService(noteRepo, db)
+	noteController = controller.NewNoteController(myRoute, noteService)
 )
 
 func init() {
-	db := db_driver.GetConnection()
-	defer db_driver.CloseConnection(db)
-	db.AutoMigrate(entity.Note{})
+	err := db.AutoMigrate(entity.Note{})
+	if err != nil {
+		log.Fatal("error init main : ", err)
+		return
+	}
+}
 
+func NewGraphQL(userService service.UserService, noteService service.NoteService, route *mux.Router) *schema.GraphQL {
+	return &schema.GraphQL{
+		UserService: userService,
+		NoteService: noteService,
+		Route:       route,
+	}
 }
 
 func main() {
@@ -53,17 +52,16 @@ func main() {
 	fmt.Println("server running in port ", PORT)
 
 	userController.InitialPath("/user")
-
 	noteController.InitialPath("/note")
 
+	graphql := NewGraphQL(userService, noteService, myRoute)
 	graphql.InitialPath("/graphql")
 
-	myRoute.HandleFunc("/", chectAPI).Methods("GET")
-
+	myRoute.HandleFunc("/", checkAPI).Methods("GET")
 	log.Fatal(http.ListenAndServe(":"+PORT, myRoute))
 
 }
 
-func chectAPI(w http.ResponseWriter, r *http.Request) {
+func checkAPI(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, "ok")
 }

@@ -86,8 +86,8 @@ var (
 )
 
 type GraphQL struct {
-	UserService *service.UserService
-	NoteService *service.NoteService
+	UserService service.UserService
+	NoteService service.NoteService
 	schema      *handler.Handler
 	Route       *mux.Router
 }
@@ -101,7 +101,7 @@ func (g *GraphQL) initQueryMutation() {
 				Type: graphql.NewList(userType),
 				Args: nil,
 				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-					user, err := g.UserService.GetAllUser()
+					user, err := g.UserService.GetAllUser(p.Context)
 					if err != nil {
 						return nil, err
 					}
@@ -124,7 +124,7 @@ func (g *GraphQL) initQueryMutation() {
 						Email:    p.Args["email"].(string),
 						Password: p.Args["password"].(string),
 					}
-					if result, err := g.UserService.SignInUser(newUser); err != nil {
+					if result, err := g.UserService.SignInUser(p.Context, newUser); err != nil {
 						return response.Resp{
 							Status:  "error",
 							Message: err.Error(),
@@ -149,7 +149,7 @@ func (g *GraphQL) initQueryMutation() {
 					"UserId": &graphql.ArgumentConfig{Type: graphql.NewNonNull(graphql.String)},
 				},
 				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-					result, err := g.NoteService.GetNoteByUID(p.Args["UserId"].(string))
+					result, err := g.NoteService.GetNoteByUID(p.Context, p.Args["UserId"].(string))
 					if err != nil {
 						return nil, err
 					}
@@ -178,7 +178,7 @@ func (g *GraphQL) initQueryMutation() {
 						Email:    p.Args["email"].(string),
 						Password: p.Args["password"].(string),
 					}
-					if result, err := g.UserService.CreateNewUser(newUser); err != nil {
+					if result, err := g.UserService.CreateNewUser(p.Context, newUser); err != nil {
 						return nil, err
 					} else {
 						return result, nil
@@ -214,7 +214,7 @@ func (g *GraphQL) initQueryMutation() {
 						CreatedDate: time.Now(),
 						UpdateDate:  time.Now(),
 					}
-					note, err := g.NoteService.InsertNewNote(newNote)
+					note, err := g.NoteService.InsertNewNote(p.Context, newNote)
 					if err != nil {
 						return nil, err
 					}
@@ -232,7 +232,7 @@ func (g *GraphQL) initQueryMutation() {
 					"NoteId": &graphql.ArgumentConfig{Type: graphql.NewNonNull(graphql.Int)},
 				},
 				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-					err := g.NoteService.Remove(p.Args["NoteId"].(int))
+					err := g.NoteService.Remove(p.Context, p.Args["NoteId"].(int))
 
 					if err != nil {
 						return response.Resp{
@@ -255,7 +255,7 @@ func (g *GraphQL) initQueryMutation() {
 					"NoteId": &graphql.ArgumentConfig{Type: graphql.NewNonNull(graphql.Int)},
 				},
 				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-					err := g.NoteService.RemovePermanent(p.Args["NoteId"].(int))
+					err := g.NoteService.RemovePermanent(p.Context, p.Args["NoteId"].(int))
 
 					if err != nil {
 						return response.Resp{

@@ -3,12 +3,13 @@ package repository
 import (
 	"context"
 	"github.com/MCPutro/my-note/entity"
+	"gorm.io/gorm"
 )
 
-type NoteRepositoryInterface interface {
-	Insert(ctx context.Context, newNote entity.Note) (entity.Note, error)
-	Update(ctx context.Context, note entity.Note) (entity.Note, error)
-	Remove(ctx context.Context, noteId int) error
-	RemovePermanent(ctx context.Context, noteId int) error
-	FindByUserId(ctx context.Context, userId string) ([]entity.Note, error)
+type NoteRepository interface {
+	Save(ctx context.Context, DB *gorm.DB, newNote entity.Note) (entity.Note, error)
+	Update(ctx context.Context, DB *gorm.DB, note entity.Note) (entity.Note, error)
+	Delete(ctx context.Context, DB *gorm.DB, noteId int) error
+	DeletePermanent(ctx context.Context, DB *gorm.DB, noteId int) error
+	FindByUID(ctx context.Context, DB *gorm.DB, userId string) ([]entity.Note, error)
 }
