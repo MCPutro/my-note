@@ -20,9 +20,9 @@ var (
 			"Email": &graphql.Field{
 				Type: graphql.String,
 			},
-			"Password": &graphql.Field{
-				Type: graphql.String,
-			},
+			//"Password": &graphql.Field{
+			//	Type: graphql.String,
+			//},
 		},
 	})
 	noteType = graphql.NewObject(graphql.ObjectConfig{
@@ -145,10 +145,10 @@ func (g *GraphQL) initQueryMutation() {
 				Name: "",
 				Type: graphql.NewList(noteType),
 				Args: graphql.FieldConfigArgument{
-					"UserId": &graphql.ArgumentConfig{Type: graphql.NewNonNull(graphql.String)},
+					"userId": &graphql.ArgumentConfig{Type: graphql.NewNonNull(graphql.String)},
 				},
 				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-					result, err := g.NoteService.GetNoteByUID(p.Context, p.Args["UserId"].(string))
+					result, err := g.NoteService.GetNoteByUID(p.Context, p.Args["userId"].(string))
 					if err != nil {
 						return nil, err
 					}
@@ -228,10 +228,10 @@ func (g *GraphQL) initQueryMutation() {
 				Name: "",
 				Type: respNoteType,
 				Args: graphql.FieldConfigArgument{
-					"NoteId": &graphql.ArgumentConfig{Type: graphql.NewNonNull(graphql.Int)},
+					"noteId": &graphql.ArgumentConfig{Type: graphql.NewNonNull(graphql.Int)},
 				},
 				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-					err := g.NoteService.Remove(p.Context, p.Args["NoteId"].(int))
+					err := g.NoteService.Remove(p.Context, p.Args["noteId"].(int))
 
 					if err != nil {
 						return response.Resp{
@@ -244,17 +244,17 @@ func (g *GraphQL) initQueryMutation() {
 
 				Subscribe:         nil,
 				DeprecationReason: "",
-				Description:       "remove note to recycle bin",
+				Description:       "remove note to recycle bin (update visible to false)",
 			},
 
 			"removeNotePermanent": &graphql.Field{
 				Name: "",
 				Type: respNoteType,
 				Args: graphql.FieldConfigArgument{
-					"NoteId": &graphql.ArgumentConfig{Type: graphql.NewNonNull(graphql.Int)},
+					"noteId": &graphql.ArgumentConfig{Type: graphql.NewNonNull(graphql.Int)},
 				},
 				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-					err := g.NoteService.RemovePermanent(p.Context, p.Args["NoteId"].(int))
+					err := g.NoteService.RemovePermanent(p.Context, p.Args["noteId"].(int))
 
 					if err != nil {
 						return response.Resp{
