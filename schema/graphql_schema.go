@@ -12,12 +12,12 @@ import (
 
 var (
 	userType = graphql.NewObject(graphql.ObjectConfig{
-		Name: "User",
+		Name: "user",
 		Fields: graphql.Fields{
-			"Id": &graphql.Field{
+			"id": &graphql.Field{
 				Type: graphql.String,
 			},
-			"Email": &graphql.Field{
+			"email": &graphql.Field{
 				Type: graphql.String,
 			},
 			//"Password": &graphql.Field{
@@ -26,56 +26,56 @@ var (
 		},
 	})
 	noteType = graphql.NewObject(graphql.ObjectConfig{
-		Name: "Note",
+		Name: "note",
 		Fields: graphql.Fields{
-			"Id": &graphql.Field{
+			"id": &graphql.Field{
 				Type: graphql.Int,
 			},
-			"Text": &graphql.Field{
+			"text": &graphql.Field{
 				Type: graphql.String,
 			},
-			"Visible": &graphql.Field{
+			"visible": &graphql.Field{
 				Type: graphql.Boolean,
 			},
-			"UserID": &graphql.Field{
+			"userId": &graphql.Field{
 				Type: graphql.String,
 			},
-			"ThemeColor": &graphql.Field{
+			"themeColor": &graphql.Field{
 				Type: graphql.String,
 			},
-			"CreatedDate": &graphql.Field{
+			"createdDate": &graphql.Field{
 				Type: graphql.DateTime,
 			},
-			"UpdateDate": &graphql.Field{
+			"updateDate": &graphql.Field{
 				Type: graphql.DateTime,
 			},
 		},
 	})
 
 	respUserType = graphql.NewObject(graphql.ObjectConfig{
-		Name: "UserResponse",
+		Name: "userResponse",
 		Fields: graphql.Fields{
-			"Status": &graphql.Field{
+			"status": &graphql.Field{
 				Type: graphql.String,
 			},
-			"Message": &graphql.Field{
+			"message": &graphql.Field{
 				Type: graphql.String,
 			},
-			"Data": &graphql.Field{
+			"data": &graphql.Field{
 				Type: userType,
 			},
 		},
 	})
 	respNoteType = graphql.NewObject(graphql.ObjectConfig{
-		Name: "NoteResponse",
+		Name: "noteResponse",
 		Fields: graphql.Fields{
-			"Status": &graphql.Field{
+			"status": &graphql.Field{
 				Type: graphql.String,
 			},
-			"Message": &graphql.Field{
+			"message": &graphql.Field{
 				Type: graphql.String,
 			},
-			"Data": &graphql.Field{
+			"data": &graphql.Field{
 				Type: noteType,
 			},
 		},
@@ -108,7 +108,7 @@ func (g *GraphQL) initQueryMutation() {
 				},
 				Subscribe:         nil,
 				DeprecationReason: "",
-				Description: "Get user	 list",
+				Description:       "Get user list",
 			},
 
 			"getUser": &graphql.Field{
