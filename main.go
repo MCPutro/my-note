@@ -7,19 +7,11 @@ import (
 	db_driver "github.com/MCPutro/my-note/db-driver"
 	"github.com/MCPutro/my-note/entity"
 	"github.com/MCPutro/my-note/repository"
-	"github.com/MCPutro/my-note/schema"
 	"github.com/MCPutro/my-note/service"
 	"log"
 	"net/http"
 	"os"
 )
-
-func NewGraphQL(userService service.UserService, noteService service.NoteService) *schema.GraphQL {
-	return &schema.GraphQL{
-		UserService: userService,
-		NoteService: noteService,
-	}
-}
 
 func main2() {
 
@@ -38,7 +30,7 @@ func main2() {
 	noteService := service.NewNoteService(noteRepo, db)
 	noteController := controller.NewNoteController(noteService)
 
-	graphql := NewGraphQL(userService, noteService)
+	graphql := app.NewGraphQL(userService, noteService)
 
 	PORT := os.Getenv("PORT")
 	if PORT == "" {

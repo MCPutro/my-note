@@ -29,7 +29,7 @@ func InitServer() *app.Server {
 		db_driver.GetConnection,
 		UserSet,
 		NoteSet,
-		NewGraphQL,
+		app.NewGraphQL,
 		app.NewRouter,
 		app.NewServer,
 	)

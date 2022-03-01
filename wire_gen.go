@@ -25,7 +25,7 @@ func InitServer() *app.Server {
 	noteRepository := repository.NewNoteRepository()
 	noteService := service.NewNoteService(noteRepository, db)
 	noteController := controller.NewNoteController(noteService)
-	graphQL := NewGraphQL(userService, noteService)
+	graphQL := app.NewGraphQL(userService, noteService)
 	router := app.NewRouter(userController, noteController, graphQL)
 	server := app.NewServer(db, router)
 	return server
