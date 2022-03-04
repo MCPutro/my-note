@@ -14,14 +14,14 @@ func NewNoteRepository() NoteRepository {
 	return &noteRepoImplement{}
 }
 
-func (n *noteRepoImplement) Save(ctx context.Context, DB *gorm.DB, newNote entity.Note) (entity.Note, error) {
+func (n *noteRepoImplement) Save(ctx context.Context, DB *gorm.DB, newNote entity.Note) (*entity.Note, error) {
 
 	//check user id
 	userExisting := entity.User{}
 	result2 := DB.WithContext(ctx).Where("id = ?", newNote.UserId).First(&userExisting)
 
 	if result2.Error != nil {
-		return entity.Note{}, errors.New("UserId not found")
+		return nil, errors.New("UserId not found")
 	}
 
 	newNote.User = userExisting
@@ -29,10 +29,10 @@ func (n *noteRepoImplement) Save(ctx context.Context, DB *gorm.DB, newNote entit
 	result := DB.WithContext(ctx).Create(&newNote)
 
 	if result.Error != nil {
-		return entity.Note{}, result.Error
+		return nil, result.Error
 	}
 
-	return entity.Note{
+	return &entity.Note{
 		ID:          newNote.ID,
 		Text:        newNote.Text,
 		Visible:     newNote.Visible,
@@ -42,7 +42,7 @@ func (n *noteRepoImplement) Save(ctx context.Context, DB *gorm.DB, newNote entit
 
 }
 
-func (n *noteRepoImplement) Update(ctx context.Context, DB *gorm.DB, note entity.Note) (entity.Note, error) {
+func (n *noteRepoImplement) Update(ctx context.Context, DB *gorm.DB, note entity.Note) (*entity.Note, error) {
 	result := DB.WithContext(ctx).Updates(&note)
 
 	//defer func() {
@@ -52,10 +52,10 @@ func (n *noteRepoImplement) Update(ctx context.Context, DB *gorm.DB, note entity
 	//}()
 
 	if result.Error != nil {
-		return entity.Note{}, result.Error
+		return nil, result.Error
 	}
 
-	return entity.Note{
+	return &entity.Note{
 		ID:          note.ID,
 		Text:        note.Text,
 		Visible:     note.Visible,
@@ -93,7 +93,7 @@ func (n *noteRepoImplement) DeletePermanent(ctx context.Context, DB *gorm.DB, no
 	return nil
 }
 
-func (n *noteRepoImplement) FindByUID(ctx context.Context, DB *gorm.DB, userId string) ([]entity.Note, error) {
+func (n *noteRepoImplement) FindByUID(ctx context.Context, DB *gorm.DB, userId string) (*[]entity.Note, error) {
 
 	var listNote []entity.Note
 
@@ -101,8 +101,8 @@ func (n *noteRepoImplement) FindByUID(ctx context.Context, DB *gorm.DB, userId s
 	find := DB.WithContext(ctx).Where("user_id = ?", userId).Find(&listNote)
 
 	if find.Error != nil {
-		return listNote, find.Error
+		return nil, find.Error
 	}
 
-	return listNote, nil
+	return &listNote, nil
 }

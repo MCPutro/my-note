@@ -20,7 +20,7 @@ func NewNoteService(noteRepository repository.NoteRepository, DB *gorm.DB) NoteS
 	}
 }
 
-func (n *NoteServiceImpl) InsertNewNote(ctx context.Context, newNote entity.Note) (entity.Note, error) {
+func (n *NoteServiceImpl) InsertNewNote(ctx context.Context, newNote entity.Note) (*entity.Note, error) {
 
 	//noteRepo := repository.NewNoteRepoImplement(db_driver.GetConnection())
 
@@ -41,7 +41,7 @@ func (n *NoteServiceImpl) InsertNewNote(ctx context.Context, newNote entity.Note
 	return result, nil
 }
 
-func (n *NoteServiceImpl) UpdateNote(ctx context.Context, note entity.Note) (entity.Note, error) {
+func (n *NoteServiceImpl) UpdateNote(ctx context.Context, note entity.Note) (*entity.Note, error) {
 
 	//noteRepo := repository.GetNoteRepository(db_driver.GetConnection())
 
@@ -60,7 +60,7 @@ func (n *NoteServiceImpl) UpdateNote(ctx context.Context, note entity.Note) (ent
 	return result, nil
 }
 
-func (n *NoteServiceImpl) GetNoteByUID(ctx context.Context, UserId string) ([]entity.Note, error) {
+func (n *NoteServiceImpl) GetNoteByUID(ctx context.Context, UserId string) (*[]entity.Note, error) {
 
 	//noteRepo := repository.GetNoteRepository(db_driver.GetConnection())
 
