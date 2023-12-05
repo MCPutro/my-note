@@ -1,2 +1,3 @@
 .env
-/schema/schema_old.go
+/GraphQL/schema/schema_old.go
+.idea

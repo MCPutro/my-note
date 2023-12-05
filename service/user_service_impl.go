@@ -5,6 +5,7 @@ import (
 	"errors"
 	"github.com/MCPutro/my-note/entity"
 	"github.com/MCPutro/my-note/repository"
+	"github.com/MCPutro/my-note/util"
 	"gorm.io/gorm"
 	"time"
 )
@@ -46,6 +47,11 @@ func (us *UserServiceImpl) SignInUser(ctx context.Context, user entity.User) (*e
 	}
 
 	if existingUser.Password == user.Password {
+		token, err := util.GenerateToken(existingUser.ID)
+		if err != nil {
+			return nil, err
+		}
+		existingUser.Token = token
 		return existingUser, nil
 	} else {
 		return nil, errors.New("password salah")

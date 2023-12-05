@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/MCPutro/my-note/GraphQL"
 	"github.com/MCPutro/my-note/app"
 	"github.com/MCPutro/my-note/controller"
 	db_driver "github.com/MCPutro/my-note/db-driver"
@@ -13,7 +14,7 @@ import (
 	"os"
 )
 
-func main2() {
+func main() {
 
 	db := db_driver.GetConnection()
 
@@ -30,7 +31,8 @@ func main2() {
 	noteService := service.NewNoteService(noteRepo, db)
 	noteController := controller.NewNoteController(noteService)
 
-	graphql := app.NewGraphQL(userService, noteService)
+	newGraphQL := GraphQL.NewGraphQL(userService, noteService)
+	newGraphQL.InitQueryAndMutation()
 
 	PORT := os.Getenv("PORT")
 	if PORT == "" {
@@ -38,13 +40,13 @@ func main2() {
 	}
 	fmt.Println("server running in port ", PORT)
 
-	server := app.NewRouter(userController, noteController, graphql)
+	server := app.NewRouter(userController, noteController, newGraphQL)
 
 	log.Fatal(http.ListenAndServe(":"+PORT, server))
 
 }
 
-func main() {
+func main2() {
 	server := InitServer()
 	err := server.DB.AutoMigrate(entity.Note{})
 	if err != nil {
