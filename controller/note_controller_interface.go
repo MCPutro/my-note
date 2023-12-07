@@ -1,15 +1,13 @@
 package controller
 
 import (
-	"github.com/gorilla/mux"
 	"net/http"
 )
 
 type NoteController interface {
-	InitialPath(route *mux.Router, path string)
-	createNewNote(w http.ResponseWriter, r *http.Request)
-	updateNote(w http.ResponseWriter, r *http.Request)
-	getNoteByUserId(w http.ResponseWriter, r *http.Request)
-	remove(w http.ResponseWriter, r *http.Request)
-	removePermanent(w http.ResponseWriter, r *http.Request)
+	CreateNew(w http.ResponseWriter, r *http.Request)
+	Update(w http.ResponseWriter, r *http.Request)
+	GetByUserId(w http.ResponseWriter, r *http.Request)
+	Delete(w http.ResponseWriter, r *http.Request)
+	DeletePermanent(w http.ResponseWriter, r *http.Request)
 }

@@ -20,7 +20,7 @@ var (
 
 type GraphQL interface {
 	InitQueryAndMutation()
-	GetHandlerFunc() *graphHandler.Handler
+	GetHandler() *graphHandler.Handler
 }
 
 type graphqlImpl struct {
@@ -29,8 +29,8 @@ type graphqlImpl struct {
 	handlerFunc *graphHandler.Handler
 }
 
-func NewGraphQL(userservice service.UserService, noteservice service.NoteService) GraphQL {
-	return &graphqlImpl{userService: userservice, noteService: noteservice}
+func NewGraphQL(userService service.UserService, noteService service.NoteService) GraphQL {
+	return &graphqlImpl{userService: userService, noteService: noteService}
 }
 
 func (g *graphqlImpl) InitQueryAndMutation() {
@@ -261,6 +261,6 @@ func (g *graphqlImpl) InitQueryAndMutation() {
 	})
 }
 
-func (g *graphqlImpl) GetHandlerFunc() *graphHandler.Handler {
+func (g *graphqlImpl) GetHandler() *graphHandler.Handler {
 	return g.handlerFunc
 }

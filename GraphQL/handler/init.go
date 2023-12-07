@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-func MyCustomGraphQLHandler(schema *goGraphQL.Schema) func(http.ResponseWriter, *http.Request) {
+func New(schema *goGraphQL.Schema) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// get query
 		opts := goGraphQLHandler.NewRequestOptions(r)

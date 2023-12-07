@@ -12,14 +12,35 @@ import (
 func NewRouter(userController controller.UserController, noteController controller.NoteController, graphql myGraphQL.GraphQL) *mux.Router {
 	myRoute := mux.NewRouter()
 
-	userController.InitialPath(myRoute, "/user")
-	noteController.InitialPath(myRoute, "/note")
+	userRouter(myRoute, userController)
 
-	myRoute.HandleFunc("/graphql", myGraphQLHandler.MyCustomGraphQLHandler(graphql.GetHandlerFunc().Schema))
-	myRoute.Handle("/graphql-playground", myGraphQLHandler.Playground("gr", "/graphql")).Methods(http.MethodGet)
+	noteRouter(myRoute, noteController)
+
+	graphqlRouter(myRoute, graphql)
 
 	myRoute.HandleFunc("/", checkAPI)
 	return myRoute
+}
+
+func userRouter(route *mux.Router, userController controller.UserController) {
+	uRouter := route.PathPrefix("/user").Subrouter()
+	uRouter.HandleFunc("/signUp", userController.CreateNewUser).Methods("POST")
+	uRouter.HandleFunc("/signIn", userController.SignInUser).Methods("POST")
+	uRouter.HandleFunc("/", userController.GetAllUser).Methods("GET")
+}
+
+func noteRouter(route *mux.Router, noteController controller.NoteController) {
+	nRouter := route.PathPrefix("/note").Subrouter()
+	nRouter.HandleFunc("/create", noteController.CreateNew).Methods("POST")
+	nRouter.HandleFunc("/update", noteController.Update).Methods("POST")
+	nRouter.HandleFunc("/getAllByUID", noteController.GetByUserId).Methods("GET")
+	nRouter.HandleFunc("/remove", noteController.Delete).Methods("GET")
+	nRouter.HandleFunc("/removePermanent", noteController.DeletePermanent).Methods("GET")
+}
+
+func graphqlRouter(route *mux.Router, graphql myGraphQL.GraphQL) {
+	route.HandleFunc("/graphql", myGraphQLHandler.New(graphql.GetHandler().Schema))
+	route.Handle("/graphql-playground", myGraphQLHandler.Playground("GraphQL Playground", "/graphql")).Methods(http.MethodGet)
 }
 
 func checkAPI(w http.ResponseWriter, r *http.Request) {
