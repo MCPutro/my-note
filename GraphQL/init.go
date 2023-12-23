@@ -59,9 +59,9 @@ func (g *graphqlImpl) InitQueryAndMutation() {
 					Description:       "Get user list",
 				},
 
-				"getUser": &graphql.Field{
+				"SignIn": &graphql.Field{
 					Name: "",
-					Type: schema.RespUser,
+					Type: schema.User,
 					Args: graphql.FieldConfigArgument{
 						"email":    &graphql.ArgumentConfig{Type: graphql.NewNonNull(graphql.String)},
 						"password": &graphql.ArgumentConfig{Type: graphql.NewNonNull(graphql.String)},
@@ -72,15 +72,9 @@ func (g *graphqlImpl) InitQueryAndMutation() {
 							Password: p.Args["password"].(string),
 						}
 						if result, err := g.userService.SignInUser(p.Context, newUser); err != nil {
-							return response.Resp{
-								Status:  "error",
-								Message: err.Error(),
-							}, err
+							return nil, err
 						} else {
-							return response.Resp{
-								Status: "success",
-								Data:   result,
-							}, nil
+							return result, nil
 						}
 
 					},
@@ -118,7 +112,7 @@ func (g *graphqlImpl) InitQueryAndMutation() {
 			Name:       "mutation",
 			Interfaces: nil,
 			Fields: graphql.Fields{
-				"createUser": &graphql.Field{
+				"SignUp": &graphql.Field{
 					Name: "",
 					Type: schema.User,
 					Args: graphql.FieldConfigArgument{
@@ -189,7 +183,7 @@ func (g *graphqlImpl) InitQueryAndMutation() {
 
 				"removeNote": &graphql.Field{
 					Name: "",
-					Type: schema.RespNote,
+					Type: schema.Note,
 					Args: graphql.FieldConfigArgument{
 						"noteId": &graphql.ArgumentConfig{Type: graphql.NewNonNull(graphql.Int)},
 					},
@@ -202,10 +196,7 @@ func (g *graphqlImpl) InitQueryAndMutation() {
 						err := g.noteService.Remove(p.Context, p.Args["noteId"].(int))
 
 						if err != nil {
-							return response.Resp{
-								Status:  "error",
-								Message: err.Error(),
-							}, err
+							return nil, err
 						}
 						return response.Resp{Status: "success"}, nil
 					},
@@ -217,7 +208,7 @@ func (g *graphqlImpl) InitQueryAndMutation() {
 
 				"removeNotePermanent": &graphql.Field{
 					Name: "",
-					Type: schema.RespNote,
+					Type: schema.Note,
 					Args: graphql.FieldConfigArgument{
 						"noteId": &graphql.ArgumentConfig{Type: graphql.NewNonNull(graphql.Int)},
 					},
@@ -230,10 +221,7 @@ func (g *graphqlImpl) InitQueryAndMutation() {
 						err := g.noteService.RemovePermanent(p.Context, p.Args["noteId"].(int))
 
 						if err != nil {
-							return response.Resp{
-								Status:  "error",
-								Message: err.Error(),
-							}, err
+							return nil, err
 						}
 						return response.Resp{Status: "success"}, nil
 					},

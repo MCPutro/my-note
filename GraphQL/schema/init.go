@@ -50,33 +50,33 @@ var (
 		},
 	})
 
-	RespUser = graphql.NewObject(graphql.ObjectConfig{
-		Name: "userResponse",
-		Fields: graphql.Fields{
-			"status": &graphql.Field{
-				Type: graphql.String,
-			},
-			"message": &graphql.Field{
-				Type: graphql.String,
-			},
-			"data": &graphql.Field{
-				Type: User,
-			},
-		},
-	})
-
-	RespNote = graphql.NewObject(graphql.ObjectConfig{
-		Name: "noteResponse",
-		Fields: graphql.Fields{
-			"status": &graphql.Field{
-				Type: graphql.String,
-			},
-			"message": &graphql.Field{
-				Type: graphql.String,
-			},
-			"data": &graphql.Field{
-				Type: Note,
-			},
-		},
-	})
+	//RespUser = graphql.NewObject(graphql.ObjectConfig{
+	//	Name: "userResponse",
+	//	Fields: graphql.Fields{
+	//		"status": &graphql.Field{
+	//			Type: graphql.String,
+	//		},
+	//		"message": &graphql.Field{
+	//			Type: graphql.String,
+	//		},
+	//		"data": &graphql.Field{
+	//			Type: User,
+	//		},
+	//	},
+	//})
+	//
+	//RespNote = graphql.NewObject(graphql.ObjectConfig{
+	//	Name: "noteResponse",
+	//	Fields: graphql.Fields{
+	//		"status": &graphql.Field{
+	//			Type: graphql.String,
+	//		},
+	//		"message": &graphql.Field{
+	//			Type: graphql.String,
+	//		},
+	//		"data": &graphql.Field{
+	//			Type: Note,
+	//		},
+	//	},
+	//})
 )
