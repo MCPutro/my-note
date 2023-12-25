@@ -6,6 +6,7 @@ import (
 	"github.com/MCPutro/my-note/entity"
 	"github.com/MCPutro/my-note/repository"
 	"github.com/MCPutro/my-note/util"
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 	"time"
 )
@@ -26,6 +27,10 @@ func (us *UserServiceImpl) CreateNewUser(ctx context.Context, newUser entity.Use
 	ctx2, cancelFunc := context.WithTimeout(ctx, 10*time.Second)
 	defer cancelFunc()
 
+	//Encrypt password
+	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(newUser.Password), bcrypt.DefaultCost)
+	newUser.Password = string(hashedPassword)
+
 	insert, err := us.UserRepository.Save(ctx2, us.DB, newUser)
 
 	if err != nil {
@@ -36,17 +41,18 @@ func (us *UserServiceImpl) CreateNewUser(ctx context.Context, newUser entity.Use
 	return insert, nil
 }
 
-func (us *UserServiceImpl) SignInUser(ctx context.Context, user entity.User) (*entity.User, error) {
+func (us *UserServiceImpl) SignInUser(ctx context.Context, userLLogin entity.User) (*entity.User, error) {
 
 	ctx2, cancelFunc := context.WithTimeout(ctx, 10*time.Second)
 	defer cancelFunc()
 
-	existingUser, err := us.getByEmail(ctx2, user.Email)
+	existingUser, err := us.getByEmail(ctx2, userLLogin.Email)
 	if err != nil {
 		return nil, err
 	}
 
-	if existingUser.Password == user.Password {
+	if err = bcrypt.CompareHashAndPassword([]byte(existingUser.Password), []byte(userLLogin.Password)); err == nil {
+		// existingUser.Password == user.Password {
 		token, err := util.GenerateToken(existingUser.ID)
 		if err != nil {
 			return nil, err
@@ -54,7 +60,7 @@ func (us *UserServiceImpl) SignInUser(ctx context.Context, user entity.User) (*e
 		existingUser.Token = token
 		return existingUser, nil
 	} else {
-		return nil, errors.New("password salah")
+		return nil, errors.New("invalid  email or password")
 	}
 }
 
