@@ -9,7 +9,7 @@ package main
 import (
 	"github.com/MCPutro/my-note/app"
 	"github.com/MCPutro/my-note/controller"
-	"github.com/MCPutro/my-note/db-driver"
+	//"github.com/MCPutro/my-note/db-driver"
 	"github.com/MCPutro/my-note/repository"
 	"github.com/MCPutro/my-note/service"
 	"github.com/google/wire"
@@ -18,17 +18,18 @@ import (
 // Injectors from injector.go:
 
 func InitServer() *app.Server {
-	db := db_driver.GetConnection()
-	userRepository := repository.NewUserRepository()
-	userService := service.NewUserService(userRepository, db)
-	userController := controller.NewUserController(userService)
-	noteRepository := repository.NewNoteRepository()
-	noteService := service.NewNoteService(noteRepository, db)
-	noteController := controller.NewNoteController(noteService)
-	graphQL := app.NewGraphQL(userService, noteService)
-	router := app.NewRouter(userController, noteController, graphQL)
-	server := app.NewServer(db, router)
-	return server
+	//db := db_driver.GetConnection()
+	//userRepository := repository.NewUserRepository()
+	//userService := service.NewUserService(userRepository, db)
+	//userController := controller.NewUserController(userService)
+	//noteRepository := repository.NewNoteRepository()
+	//noteService := service.NewNoteService(noteRepository, db)
+	//noteController := controller.NewNoteController(noteService)
+	//graphQL := app.NewGraphQL(userService, noteService)
+	//router := app.NewRouter(userController, noteController, graphQL)
+	//server := app.NewServer(db, router)
+	//return server
+	return nil
 }
 
 // injector.go:
