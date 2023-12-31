@@ -5,8 +5,7 @@ import (
 	"github.com/MCPutro/my-note/entity"
 	"github.com/MCPutro/my-note/response"
 	"github.com/MCPutro/my-note/service"
-	"github.com/gorilla/mux"
-	"io/ioutil"
+	"io"
 	"net/http"
 )
 
@@ -18,18 +17,12 @@ func NewUserController(userService service.UserService) UserController {
 	return &UserControllerImpl{UserService: userService}
 }
 
-func (uc *UserControllerImpl) InitialPath(route *mux.Router, path string) {
-	route.HandleFunc(path+"/signUp", uc.createNewUser).Methods("POST")
-	route.HandleFunc(path+"/signIn", uc.signInUser).Methods("POST")
-	route.HandleFunc(path+"/getAllUser", uc.getAllUser).Methods("GET")
-}
-
-func (uc UserControllerImpl) createNewUser(w http.ResponseWriter, r *http.Request) {
-	requestPayload, _ := ioutil.ReadAll(r.Body)
+func (u *UserControllerImpl) CreateNewUser(w http.ResponseWriter, r *http.Request) {
+	requestPayload, _ := io.ReadAll(r.Body)
 	var newUser entity.User
 	json.Unmarshal(requestPayload, &newUser)
 
-	result, err := uc.UserService.CreateNewUser(r.Context(), newUser)
+	result, err := u.UserService.CreateNewUser(r.Context(), newUser)
 
 	var respJson []byte
 
@@ -54,13 +47,13 @@ func (uc UserControllerImpl) createNewUser(w http.ResponseWriter, r *http.Reques
 	w.Write(respJson)
 }
 
-func (uc UserControllerImpl) signInUser(w http.ResponseWriter, r *http.Request) {
-	requestPayload, _ := ioutil.ReadAll(r.Body)
+func (u *UserControllerImpl) SignInUser(w http.ResponseWriter, r *http.Request) {
+	requestPayload, _ := io.ReadAll(r.Body)
 	var user entity.User
 	json.Unmarshal(requestPayload, &user)
 
 	var respJson []byte
-	inUser, err := uc.UserService.SignInUser(r.Context(), user)
+	inUser, err := u.UserService.SignInUser(r.Context(), user)
 	if err != nil {
 		respJson, _ = json.Marshal(
 			response.Resp{
@@ -79,13 +72,11 @@ func (uc UserControllerImpl) signInUser(w http.ResponseWriter, r *http.Request) 
 	w.Header().Set("oke", "haha") //set data to header resp
 	w.WriteHeader(http.StatusOK)
 	w.Write(respJson)
-
 }
 
-func (uc UserControllerImpl) getAllUser(w http.ResponseWriter, r *http.Request) {
-
+func (u *UserControllerImpl) GetAllUser(w http.ResponseWriter, r *http.Request) {
 	var respJson []byte
-	listUser, err := uc.UserService.GetAllUser(r.Context())
+	listUser, err := u.UserService.GetAllUser(r.Context())
 	if err != nil {
 		respJson, _ = json.Marshal(
 			response.Resp{
@@ -104,5 +95,4 @@ func (uc UserControllerImpl) getAllUser(w http.ResponseWriter, r *http.Request) 
 	w.Header().Set("oke", "haha") //set data to header resp
 	w.WriteHeader(http.StatusOK)
 	w.Write(respJson)
-
 }

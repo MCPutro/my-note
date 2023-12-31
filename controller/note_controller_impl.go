@@ -6,8 +6,7 @@ import (
 	"github.com/MCPutro/my-note/entity"
 	"github.com/MCPutro/my-note/response"
 	"github.com/MCPutro/my-note/service"
-	"github.com/gorilla/mux"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strconv"
 )
@@ -20,19 +19,8 @@ func NewNoteController(noteService service.NoteService) NoteController {
 	return &NoteControllerImpl{NoteService: noteService}
 }
 
-func (nc *NoteControllerImpl) InitialPath(route *mux.Router, path string) {
-	route.HandleFunc(path+"/create", nc.createNewNote).Methods("POST")
-	route.HandleFunc(path+"/update", nc.updateNote).Methods("POST")
-	route.HandleFunc(path+"/getAllByUID", nc.getNoteByUserId).Methods("GET")
-	route.HandleFunc(path+"/remove", nc.remove).Methods("GET")
-	route.HandleFunc(path+"/removePermanent", nc.removePermanent).Methods("GET")
-
-	//nc.Route.HandleFunc(path+"/{sm}/subscribe", test).Methods("POST")
-	//nc.Route.HandleFunc(path+"/findAll/{sm}", sosMed.FindAll).Methods("GET")
-}
-
-func (nc *NoteControllerImpl) createNewNote(w http.ResponseWriter, r *http.Request) {
-	requestPayload, _ := ioutil.ReadAll(r.Body)
+func (nc *NoteControllerImpl) CreateNew(w http.ResponseWriter, r *http.Request) {
+	requestPayload, _ := io.ReadAll(r.Body)
 	var newNote entity.Note
 	json.Unmarshal(requestPayload, &newNote)
 
@@ -57,8 +45,8 @@ func (nc *NoteControllerImpl) createNewNote(w http.ResponseWriter, r *http.Reque
 	w.Write(respJson)
 }
 
-func (nc *NoteControllerImpl) updateNote(w http.ResponseWriter, r *http.Request) {
-	requestPayload, _ := ioutil.ReadAll(r.Body)
+func (nc *NoteControllerImpl) Update(w http.ResponseWriter, r *http.Request) {
+	requestPayload, _ := io.ReadAll(r.Body)
 	var note entity.Note
 	json.Unmarshal(requestPayload, &note)
 
@@ -83,7 +71,7 @@ func (nc *NoteControllerImpl) updateNote(w http.ResponseWriter, r *http.Request)
 	w.Write(respJson)
 }
 
-func (nc *NoteControllerImpl) getNoteByUserId(w http.ResponseWriter, r *http.Request) {
+func (nc *NoteControllerImpl) GetByUserId(w http.ResponseWriter, r *http.Request) {
 	UserId := r.Header.Get("UserId")
 
 	noteByUID, err := nc.NoteService.GetNoteByUID(r.Context(), UserId)
@@ -107,7 +95,7 @@ func (nc *NoteControllerImpl) getNoteByUserId(w http.ResponseWriter, r *http.Req
 	w.Write(respJson)
 }
 
-func (nc *NoteControllerImpl) remove(w http.ResponseWriter, r *http.Request) {
+func (nc *NoteControllerImpl) Delete(w http.ResponseWriter, r *http.Request) {
 	noteId, err := strconv.Atoi(r.Header.Get("NoteId"))
 	if err != nil {
 		fmt.Fprint(w, "harus bilangan bulat")
@@ -124,7 +112,7 @@ func (nc *NoteControllerImpl) remove(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, "OK")
 }
 
-func (nc *NoteControllerImpl) removePermanent(w http.ResponseWriter, r *http.Request) {
+func (nc *NoteControllerImpl) DeletePermanent(w http.ResponseWriter, r *http.Request) {
 	noteId, err := strconv.Atoi(r.Header.Get("NoteId"))
 	if err != nil {
 		fmt.Fprint(w, "harus bilangan bulat")
